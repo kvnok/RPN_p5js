@@ -61,10 +61,13 @@ function errorCheck(exp) {
 function VisualizeRPN() {
 	// Visualize the RPN stack
 	let stack = exptext.split(" ");
-	let x = 20;
+	let x = 40;
 	let y = 180;
 	let substack = [];
 	let i = 0;
+	strokeWeight(5);
+	line(x, y, x, y + stack.length * 50);
+	strokeWeight(3);
 	while (i < stack.length) {
 		if (!isNaN(stack[i]) || (stack[i][0] === '-' && stack[i].length > 1)) {
 			substack.push(stack[i]);
@@ -88,7 +91,8 @@ function VisualizeRPN() {
 			}
 			substack.push(result);
 		}
-		x = 20;
+		text(stack[i], 10, y + 30);
+		x = 60;
 		for (let j = 0; j < substack.length; j++) {
 			let tWidth = textWidth(substack[j]) + 10; // Calculate the width of the rectangle
 			rect(x, y, tWidth, 40); // Draw a rectangle for each stack element
