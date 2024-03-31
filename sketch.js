@@ -1,11 +1,12 @@
 let input;
 let checkButton;
+let expressiontext = '8 2 + 5 * 9 + 3 / 2 -';
 
 function setup() {
 	createCanvas(windowWidth, windowHeight); // Set canvas size to fill the screen
 
 	// Create a text input box
-	input = createInput();
+	input = createInput('8 2 + 5 * 9 + 3 / 2 -');
 	input.position(20, 20); // Set the position of the input box
 
 	// Create a button
@@ -15,7 +16,13 @@ function setup() {
 }
 
 function draw() {
-	background(220);
+	background('#FFF'); // Set the background color to white
+
+	// Display the input text
+	textSize(32);
+	text('Input:', 20, 100);
+	textSize(24);
+	text(expressiontext, 20, 150);
 }
 
 function checkRPN() {
@@ -25,7 +32,7 @@ function checkRPN() {
 	let rpnRegex = /^(\d+(\.\d+)?|\+|\-|\*|\/|\s)+$/;
 
 	if (rpnRegex.test(expression)) {
-		alert('Valid RPN expression!');
+		expressiontext = expression;
 	} else {
 		alert('Not a valid RPN expression!');
 	}
