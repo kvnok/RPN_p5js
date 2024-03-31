@@ -24,6 +24,16 @@ function draw() {
 	text('RPN: ' + exptext, 20, 100); // postfix
 	text('infix: ' + infixtext, 20, 140); // normal
 
+	// Visualize the RPN stack
+	let stack = exptext.split(" ");
+	let x = 20;
+	let y = 180; // Starting position for the stack visualization
+	let width = 60;
+	let height = 40;
+	for (let i = 0; i < stack.length; i++) {
+		rect(x, y + i * (height + 10), width, height); // Draw a rectangle for each stack element
+		text(stack[i], x + 10, y + i * (height + 10) + 30); // Display the stack element value
+	}
 }
 
 function errorCheck(exp) {
