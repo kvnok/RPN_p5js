@@ -7,7 +7,7 @@ function setup() {
 	createCanvas(windowWidth, windowHeight); // Set canvas size to fill the screen
 
 	// Create a text input box
-	input = createInput('8 2 + 5 * 9 + 3 / 2 -');
+	input = createInput(exptext);
 	input.position(20, 20); // Set the position of the input box
 
 	// Create a button
@@ -27,34 +27,35 @@ function draw() {
 	// Visualize the RPN stack
 	let stack = exptext.split(" ");
 	let x = 20;
-	let y = 180; // Starting position for the stack visualization
-	let width = 60;
-	let height = 40;
+	let y = 180;
+	textSize(32); // Set the text size for the stack elements
 	for (let i = 0; i < stack.length; i++) {
-		rect(x, y + i * (height + 10), width, height); // Draw a rectangle for each stack element
-		text(stack[i], x + 10, y + i * (height + 10) + 30); // Display the stack element value
+		let tWidth = textWidth(stack[i]) + 10; // Calculate the width of the rectangle
+		rect(x, y, tWidth, 40); // Draw a rectangle for each stack element
+		text(stack[i], x + 5, y + 30); // Display the stack element value
+		x += tWidth + 10; // Move the x position for the next rectangle
 	}
 }
 
 function errorCheck(exp) {
-    const counter = [];
+	const counter = [];
 
-    const tokens = exp.split(" ");
+	const tokens = exp.split(" ");
 
-    for (const token of tokens) {
-      if (!isNaN(token) || (token[0] === '-' && token.length > 1))
-        counter.push(0);
-      else if (token === "+" || token === "-" || token === "*" || token === "/") {
-        if (counter.length < 2)
+	for (const token of tokens) {
+	if (!isNaN(token) || (token[0] === '-' && token.length > 1))
+		counter.push(0);
+	else if (token === "+" || token === "-" || token === "*" || token === "/") {
+		if (counter.length < 2)
 			return false;
-        counter.pop(); // Pop one operand for the operator
-        counter.pop(); // Pop the second operand for the operator
-        counter.push(0); // Push the result back onto the stack
-      }
-      else
-        return false;
-    }
-    return counter.length === 1;
+		counter.pop(); // Pop one operand for the operator
+		counter.pop(); // Pop the second operand for the operator
+		counter.push(0); // Push the result back onto the stack
+	}
+	else
+		return false;
+	}
+	return counter.length === 1;
 }
 
 function checkRPN() {
