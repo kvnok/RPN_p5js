@@ -21,13 +21,18 @@ function draw() {
   
   // Draw stack of operators and operands if expression is valid
   if (validExpression) {
-    let x = 50; // Initial x position
-    let y = 200; // Initial y position
+    let x = width / 2 - 50; // Initial x position
+    let y = height / 2 - 50; // Initial y position
     let squareSize = 50; // Size of each square
     
     for (let i = 0; i < stack.length; i++) {
       fill(255, 0, 0); // Red square
       rect(x, y, squareSize, squareSize); // Draw square
+      
+      // Display element under the square
+      textAlign(CENTER, CENTER);
+      fill(0); // Black text
+      text(stack[i], x + squareSize / 2, y + squareSize + 20); // Draw element
       
       // Move to next position
       x += squareSize + 10; // Add some space between squares
