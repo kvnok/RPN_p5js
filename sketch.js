@@ -1,5 +1,7 @@
 let input;
 let checkButton;
+// 44 22 + 33 44 5 * - +
+// ((44 + 22) + (33 - (44 * 5)))
 let exptext = '8 2 + 5 * 9 + 3 / 2 -';
 let infixtext = '(((((8 + 2) * 5) + 9) / 3) - 2)';
 
@@ -9,6 +11,7 @@ function setup() {
 	// Create a text input box
 	input = createInput(exptext);
 	input.position(20, 20); // Set the position of the input box
+	input.style('font-size', '20px'); // Set the font size of the input box
 
 	// Create a button
 	checkButton = createButton('Check RPN');
@@ -23,39 +26,78 @@ function draw() {
 	textSize(32);
 	text('RPN: ' + exptext, 20, 100); // postfix
 	text('infix: ' + infixtext, 20, 140); // normal
-
-	// Visualize the RPN stack
-	let stack = exptext.split(" ");
-	let x = 20;
-	let y = 180;
-	textSize(32); // Set the text size for the stack elements
-	for (let i = 0; i < stack.length; i++) {
-		let tWidth = textWidth(stack[i]) + 10; // Calculate the width of the rectangle
-		rect(x, y, tWidth, 40); // Draw a rectangle for each stack element
-		text(stack[i], x + 5, y + 30); // Display the stack element value
-		x += tWidth + 10; // Move the x position for the next rectangle
-	}
+	VisualizeRPN();
 }
 
 function errorCheck(exp) {
 	const counter = [];
 
 	const tokens = exp.split(" ");
-
-	for (const token of tokens) {
-	if (!isNaN(token) || (token[0] === '-' && token.length > 1))
-		counter.push(0);
-	else if (token === "+" || token === "-" || token === "*" || token === "/") {
-		if (counter.length < 2)
-			return false;
-		counter.pop(); // Pop one operand for the operator
-		counter.pop(); // Pop the second operand for the operator
-		counter.push(0); // Push the result back onto the stack
+	for (let i = 0; i < tokens.length; i++) {
+		const token = tokens[i];
+		if (token === '/') {
+			const nextToken = tokens[i + 1];
+			if (nextToken === '0') {
+				return false; // Division by zero
+			}
+		}
 	}
-	else
-		return false;
+	for (const token of tokens) {
+		if (!isNaN(token) || (token[0] === '-' && token.length > 1))
+			counter.push(0);
+		else if (token === "+" || token === "-" || token === "*" || token === "/") {
+			if (counter.length < 2)
+				return false;
+			counter.pop(); // Pop one operand for the operator
+			counter.pop(); // Pop the second operand for the operator
+			counter.push(0); // Push the result back onto the stack
+		}
+		else
+			return false;
 	}
 	return counter.length === 1;
+}
+
+function VisualizeRPN() {
+	// Visualize the RPN stack
+	let stack = exptext.split(" ");
+	let x = 20;
+	let y = 180;
+	let substack = [];
+	let i = 0;
+	while (i < stack.length) {
+		if (!isNaN(stack[i]) || (stack[i][0] === '-' && stack[i].length > 1)) {
+			substack.push(stack[i]);
+		} else {
+			let operand2 = substack.pop();
+			let operand1 = substack.pop();
+			let result;
+			switch (stack[i]) {
+				case '+':
+					result = parseFloat(operand1) + parseFloat(operand2);
+					break;
+				case '-':
+					result = parseFloat(operand1) - parseFloat(operand2);
+					break;
+				case '*':
+					result = parseFloat(operand1) * parseFloat(operand2);
+					break;
+				case '/':
+					result = parseFloat(operand1) / parseFloat(operand2);
+					break;
+			}
+			substack.push(result);
+		}
+		x = 20;
+		for (let j = 0; j < substack.length; j++) {
+			let tWidth = textWidth(substack[j]) + 10; // Calculate the width of the rectangle
+			rect(x, y, tWidth, 40); // Draw a rectangle for each stack element
+			text(substack[j], x + 5, y + 30); // Display the stack element value
+			x += tWidth + 10; // Move the x position for the next rectangle
+		}
+		y += 50;
+		i++;
+	}
 }
 
 function checkRPN() {
